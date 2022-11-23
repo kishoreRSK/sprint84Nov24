@@ -1,0 +1,262 @@
+<template>
+   <div style="background-color: #DEF8DF;">
+       
+       <div class="slds-box" style="background: rgb(18, 214, 120);
+       height: 80px;
+       text-align: center;
+       font-size: x-large;
+       color: white;
+       font-weight: 700;">
+           <img src={belayLogos} style="width:20%; float: left;padding-top: 5px">
+           <span style="display: inline-block;
+           vertical-align: middle;
+           line-height: normal;">Matching Contractors For Job</span>
+       </div>
+       
+       <template if:true={loader}>
+           <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+       </template>
+       
+       <div style="float:left; width:20%; background: #DEF8DF;">
+           
+           <c-weightage-legend></c-weightage-legend>
+           
+           </br>
+           <lightning-card title="Filter" icon-name="utility:filter"></lightning-card>
+           
+           <div class="slds-box slds-theme_default">
+               
+               <template if:true={showfilter} >
+                   
+                   <lightning-input type="text"  class="strong-text" label="Service Line:" value={ServiceLine} readonly>   
+                   </lightning-input>
+                   <lightning-input type="text" class="strong-text" label="Available hours:" value={Hours} readonly>   
+                   </lightning-input>
+                   <lightning-textarea type="text" class="strong-text" label="Job Opening Time Zone:" value={timeZone} readonly>   
+                   </lightning-textarea>
+                   <lightning-combobox
+                       name="progress"
+                       class="strong-text"
+                       label="Computer:"
+                       value={computer}
+                       options={computers}
+                       onchange={handlepcChange} >
+                   </lightning-combobox>
+                   
+                   <c-mutli-select-picklist picklistlabel="Filter Time Zone:" values={timeZones} onpicklistvaluechange={hanldePicklistValueChange}></c-mutli-select-picklist>
+                
+                   <c-mutli-select-picklist picklistlabel="Industry:" values={industries} onpicklistvaluechange={hanldeIndustryPicklistValueChange}></c-mutli-select-picklist>             
+
+                </br>
+                <lightning-input  type="checkbox" label={labelName} name="ServedMonths" onchange={handleChange} value={servedLongerMonths} ></lightning-input> 
+
+                <template if:true={placedLastTwoWeeks} >
+                    <lightning-input  type="checkbox" label="Placed in last 2 weeks" onchange={handleChange} value={placedLastTwoWeeks}  checked="true"></lightning-input>
+                 </template>
+                 
+                 <template if:false={placedLastTwoWeeks} >
+                 <lightning-input  type="checkbox" label="Placed in last 2 weeks" onchange={handleChange} value={placedLastTwoWeeks} ></lightning-input>
+             </template>
+             
+             <lightning-input  type="checkbox" label="Passed Spanish Assessment" onchange={handleChange} value={placedLastTwoWeeks} ></lightning-input>
+        
+            
+             
+
+             
+                   <div class="slds-m-top_small slds-m-bottom_medium">
+                       <lightning-button label="Reset" title="reload" onclick={handleReset} class="slds-m-left_x-small">
+                       </lightning-button>
+                       <lightning-button label="Search" variant="success" title="search criteria" onclick={handleSearch} 
+                           class="slds-m-left_x-small">
+                       </lightning-button>
+                   </div>
+               </template>
+           </div>
+          </br>
+         </br>   
+       </div>
+       
+       <div style="float:right; width:78%; margin-left:10px; background: #EEFAED;">
+           <div class="slds-box ">
+               <div class="slds-clearfix" style="padding-bottom:5px;">
+                   <lightning-button  label="Deselect All"
+                       name="Deselect All"
+                       variant="brand"
+                       onclick={deselectall}
+                       icon-name=""
+                       class="slds-float_left"
+                       ></lightning-button>
+                   <lightning-button label="Create Job Applications"
+                       onclick={openModal}
+                       variant="brand"
+                       icon-name=""
+                       name="Create Job Applications"
+                       class="slds-float_right"></lightning-button>
+               </div>
+               
+               <template if:true={showTable}>
+                   
+                   <c-paginator records={contractors} 
+                       total-records={contractors.length}
+                       pre-selected={preSelected}
+                       select-all-records={selectAllRecords} 
+                       onpaginatorchange={handlePaginatorChange}>
+                   </c-paginator>
+                   
+                   <table aria-multiselectable="true" style=" background-color: #EEFAED" class="slds-table slds-table_fixed-layout  slds-table_resizable-cols" role="grid" >
+                       <thead>
+                           <tr class="slds-line-height_reset">
+                               <th class="slds-text-align_right" scope="col" style="width:3.25rem">
+                                   <span id="column-group-header" class="slds-assistive-text">Choose a row</span>
+                                   <div class="slds-th__action slds-th__action_form">
+                                       <div class="slds-checkbox">
+                                           <input type="checkbox" data-id="007" name="options" id="checkbox-unique-id-301" onchange={selectallid} checked={selectAll} value="checkbox-unique-id-301" tabindex="0" aria-labelledby="check-select-all-label column-group-header" />
+                                           <label class="slds-checkbox__label" for="checkbox-unique-id-301" id="check-select-all-label">
+                                           <span class="slds-checkbox_faux"></span>
+                                           <span class="slds-form-element__label slds-assistive-text">Select All</span>
+                                           </label>
+                                       </div>
+                                   </div>
+                               </th>
+                               <th aria-label="Name" aria-sort="none" class="slds-is-resizable " scope="col">                                
+                                       <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                           <span class="slds-truncate" style=" pointer-events: none;" title="Name">&nbsp;&nbsp;&nbsp;&nbsp;Name</span>
+                                       </div>
+                               </th>
+                               <th aria-label="Contractor Weightage" class="weightage" aria-sort="none" scope="col">
+                                       <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                           <span class="slds-truncate slds-align_absolute-center" style=" pointer-events: none;" title="Contractor Weightage">Contractor Weightage</span>
+                                       </div>
+                               </th>
+                               <th aria-label="Available Hours" aria-sort="none" class="slds-is-resizable" scope="col">
+                                       <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                           <span class="slds-truncate slds-align_absolute-center" style=" pointer-events: none;" title="Available Hours">Available Hours</span>
+                                       </div>
+                               </th>
+                               <th aria-label="Currently being vetted" aria-sort="none" class="slds-is-resizable" scope="col">
+                                       <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                           <span class="slds-truncate slds-align_absolute-center" style=" pointer-events: none;" title="Currently being vetted">Currently being vetted</span>
+                                       </div>
+                               </th>
+                               <th aria-label="Date Last Placed" aria-sort="none" class="slds-is-resizable" scope="col">
+                                       <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                           <span class="slds-truncate slds-align_absolute-center" style=" pointer-events: none;" title="Date Last Placed">Date Last Placed</span>
+                                       </div>
+                               </th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <template if:true={showTable}>
+                               <template for:each={recordsToDisplay} for:item="acc">
+                                   <tr aria-selected="false" class="slds-hint-parent" key = {acc.contractorId}>
+                                       <td class="slds-text-align_right" role="gridcell">
+                                           <div class="slds-checkbox">
+                                               <input type="checkbox" data-id={acc.contractorId} id={acc.contractorId} value={acc.contractorId}  onchange={handdletick} name="chk"  checked ={acc.isChecked} />
+                                               <label class="slds-checkbox__label" for={acc.contractorId} id={acc.contractorId}>
+                                               <span class="slds-checkbox_faux"></span>
+                                               <span class="slds-form-element__label slds-assistive-text">Select item 1</span>
+                                               </label>
+                                           </div>
+                                       </td>
+                                       <td >
+                                           <div class="slds-truncate" title={acc.contractorName}>
+                                               <a onclick={getIdVal} data-id={acc.contractorId}>{acc.contractorName}</a> 
+                                           </div>
+                                       </td>
+                                       <td role="gridcell"  scope="row" data-label="Contractor Weightage">
+                                           <div class="row">
+                                               <div class="column" data-id={acc.contractorId} onclick={showWeightage} title="Growth" style="cursor: pointer; background-color:#12d678;">
+                                                   <p class="slds-text-align_center">{acc.growthWeightage}</p>
+                                               </div>
+                                               <div class="column" title="Tools" data-id={acc.contractorId} onclick={showWeightage} style=" cursor: pointer; background-color:#02293d;">
+                                                   <p class="slds-text-align_center" style="color: cornsilk;">{acc.toolsWeightage}</p>
+                                               </div>
+                                               <div class="column" title="Work Experience" data-id={acc.contractorId} onclick={showWeightage} style="cursor: pointer; background-color:#d9399e;">
+                                                   <p class="slds-text-align_center">{acc.taskWeightage}</p>
+                                               </div>
+                                               <div class="column" title="Industry" data-id={acc.contractorId} onclick={showWeightage} style=" cursor: pointer; background-color:#ff913b;">
+                                                   <p class="slds-text-align_center">{acc.industryWeightage}</p>
+                                               </div>
+                                               <div class="column" title="Client Preference" onclick={showWeightage} data-id={acc.contractorId} style=" cursor: pointer; background-color:#4ce5e1">
+                                                <p class="slds-text-align_center">{acc.bkContractorPerferenceWeightage}</p>
+                                               </div>
+                                               <div class="totalColumn" title="Total Weightage" data-id={acc.contractorId} style=" cursor: context-menu; background-color:rgba(77, 126, 133, 0.986);">
+                                                   <p class="slds-text-align_center" style="color: cornsilk;">{acc.totalWeightageSum}</p>
+                                               </div>
+                                           </div>
+                                       </td>
+                                       <td role="gridcell" scope="row" data-label="Available Hours">
+                                           <div class="slds-truncate" title={acc.contractorHours}>
+                                               <p class="slds-text-align_center">{acc.contractorHours}</p>
+                                           </div>
+                                       </td>
+                                       <td role="gridcell" style="text-align: center;"  scope="row" data-label="Currently Being Vetted">
+                                           <input style="pointer-events: none;" type="checkbox"   checked ={acc.contractorBeingVetted} />
+                                       </td>
+                                       <td role="gridcell" style="text-align: center;"  scope="row" data-label="Date Last Placed">
+                                        <p class="slds-text-align_center">{acc.contractorDateLastPlaced}</p>
+                                       </td>
+                                   </tr>
+                               </template>
+                           </template>
+                       </tbody>
+                   </table>
+                   
+                   <template if:true={isDisplayNoRecords}>
+                       <div class="slds-align_absolute-center">
+                           <br/>
+                           No records found
+                       </div>
+                   </template>
+                   
+                  </br>
+                </br>
+               </template>
+               
+               <template if:true={openPopup}>
+                   <section role="dialog" tabindex="-1" aria-label="Confirmation popup" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                       <div class="slds-modal__container">
+                           <header class="slds-modal__header slds-modal__header_empty">
+                               <button onclick={closeModal} class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                                   <lightning-icon icon-name="utility:close" alternative-text="close" variant="Neutral"></lightning-icon>
+                                   <span class="slds-assistive-text">Close</span>
+                               </button>
+                           </header>
+                           <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                               <p>Create Job application record for this selected <strong>{length}</strong> records</p>
+                           </div>
+                           <footer class="slds-modal__footer">
+                               <button onclick={closeModal} class="slds-button slds-button_neutral">Cancel</button>
+                               <button onclick={createApplications} class="slds-button slds-button_brand">Confirm</button>
+                           </footer>
+                       </div>
+                   </section>
+                   <div class="slds-backdrop slds-backdrop_open"></div>
+               </template>
+
+               <template if:true={openWeightage}>
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <button onclick={closeWeightage} class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                                <lightning-icon icon-name="utility:close" alternative-text="close" variant="Neutral"></lightning-icon>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{weightageHeader}</h2>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                            <p> {weightageContent}
+                            </p>
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <button class="slds-button slds-button_neutral" onclick={closeWeightage}>Close</button>
+                        </footer>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+               </template>
+           </div>
+       </div>
+   </div>
+</template>

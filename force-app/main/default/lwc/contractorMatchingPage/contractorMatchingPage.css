@@ -1,0 +1,86 @@
+.strong-text {
+    font-weight: bold;
+}
+
+.slds-utility-bar {
+    display: none !important;
+}
+
+/* Create four equal columns that floats next to each other */
+.column {
+    float: left;
+    width: 16%;
+    height: 16px; /* Should be removed. Only for demonstration */
+    display: inline-table;  
+}
+
+.totalColumn {
+    float: left;
+    width: 16%;
+    height: 16px; /* Should be removed. Only for demonstration */
+    display: inline-table;  
+    border-radius: 100px;
+}
+
+.weightage {
+    width: 230px;
+}
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+.widthExpanded{
+    font-weight: bold;
+    width: 100%;
+}
+.center{
+    font-weight: bold;
+    color: green;
+    text-align: center;
+}
+
+ul{
+    list-style: none;
+}
+
+ul .growth li::before { 
+
+    content: "\2022";  
+    color:red; 
+    display: inline-block; 
+    width: 1em;
+    margin-left: -0.9em;
+    font-weight: bold; 
+} 
+ul .tool li::before { 
+
+    content: "\2022";  
+    color: blue; 
+    display: inline-block; 
+    width: 1em;
+    margin-left: -0.9em;
+    font-weight: bold; 
+} 
+
+ul .Work_Experience li::before { 
+
+    content: "\2022";  
+    color:green; 
+    display: inline-block; 
+    width: 1em;
+    margin-left: -0.9em;
+    font-weight: bold; 
+} 
+
+ul .Industry li::before { 
+
+    content: "\2022";  
+    color:yellow; 
+    display: inline-block; 
+    width: 1em;
+    margin-left: -0.9em;
+    font-weight: bold; 
+}
