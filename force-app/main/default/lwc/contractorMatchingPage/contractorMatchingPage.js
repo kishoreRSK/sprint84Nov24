@@ -73,7 +73,7 @@ export default class ContractorMatchingPage extends NavigationMixin(LightningEle
     
     @wire(getMatchingContractors, { currentRecordId: '$recordId' })
     wiredContacts(value) {
-        //// Hold on to the provisioned value so we can refresh it later.
+        //// Hold on to the provisioned value so we can refresh it later..
     this.wiredActivities = value;
     // Destructure the provisioned value 
     const { data, error } = value;

@@ -27,7 +27,7 @@ global class Batch_3060_CommonLogic implements Database.Batchable<sObject>, Data
     
     global void execute(Database.BatchableContext bc, List<Account> perAccList) {
         
-        //Variable declaration Section.
+        //Variable declaration Section...
         List<Account> accList = new List<Account> ();
         List<Task> tskList = new List<Task>();
         List<Messaging.SingleEmailMessage> mailList = new List<Messaging.SingleEmailMessage>();
