@@ -33,7 +33,7 @@ global class Batch_3060_CommonLogic implements Database.Batchable<sObject>, Data
         List<Messaging.SingleEmailMessage> mailList = new List<Messaging.SingleEmailMessage>();
         List<Account> accEmailList = new List<Account>();
         
-        //Change the custom lable to set the from email.
+        //Change the custom lable to set the from email....
         OrgWideEmailAddress owea = [select Id,DisplayName, Address 
                                     from OrgWideEmailAddress 
                                     where Address = : system.label.UID_FromEmail
